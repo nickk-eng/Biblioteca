@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Portal da Biblioteca UMC - Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top right, rgba(201, 162, 39, 0.18), transparent 30%),
+                linear-gradient(135deg, #0f172a 0%, #1e293b 45%, #334155 100%);
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+        .auth-card {
+            border: 0;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+        }
+        .auth-left {
+            background: linear-gradient(180deg, #0f172a 0%, #1e3a5f 100%);
+            color: #fff;
+            padding: 42px 34px;
+        }
+        .auth-right {
+            background: #ffffff;
+            padding: 42px 34px;
+        }
+        .brand-chip {
+            display: inline-block;
+            background: rgba(255,255,255,0.12);
+            border: 1px solid rgba(255,255,255,0.16);
+            color: #f8fafc;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 13px;
+            letter-spacing: 0.4px;
+        }
+        .brand-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-top: 18px;
+            line-height: 1.15;
+        }
+        .brand-text {
+            color: #cbd5e1;
+            margin-top: 14px;
+            line-height: 1.6;
+        }
+        .form-label {
+            font-weight: 600;
+            color: #334155;
+        }
+        .form-control, .form-select {
+            border-radius: 14px;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
+        }
+        .form-control:focus, .form-select:focus {
+            box-shadow: 0 0 0 0.2rem rgba(30,58,95,0.15);
+            border-color: #1e3a5f;
+        }
+        .btn-umc {
+            background: linear-gradient(90deg, #1e3a5f 0%, #0f172a 100%);
+            border: 0;
+            color: #fff;
+            padding: 12px 18px;
+            border-radius: 14px;
+            font-weight: 600;
+        }
+        .btn-umc:hover {
+            color: #fff;
+            opacity: 0.95;
+        }
+        .accent-line {
+            width: 72px;
+            height: 4px;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #c9a227 0%, #facc15 100%);
+            margin-top: 12px;
+        }
+        .mini-info {
+            font-size: 0.95rem;
+            color: #64748b;
+        }
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container py-5">
+    <div class="row justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="col-lg-10">
+            <div class="card auth-card">
+                <div class="row g-0">
+                    <div class="col-lg-5 auth-left d-flex flex-column justify-content-center">
+                        <span class="brand-chip">Universidade de Mogi das Cruzes</span>
+                        <div class="brand-title">Portal da Biblioteca Acadêmica</div>
+                        <div class="accent-line"></div>
+                        <p class="brand-text">
+                            Ambiente de acesso para alunos, professores e funcionários acompanharem
+                            empréstimos, reservas, histórico e gestão do acervo.
+                        </p>
+                    </div>
+
+                    <div class="col-lg-7 auth-right">
+                        <h3 class="fw-bold mb-1 text-dark">Entrar no sistema</h3>
+                        <p class="mini-info mb-4">Use seu login institucional da biblioteca.</p>
+
+                        <div th:if="${param.erro}" class="alert alert-danger rounded-4">
+                            Usuário ou senha inválidos.
+                        </div>
+
+                        <div th:if="${param.logout}" class="alert alert-success rounded-4">
+                            Logout realizado com sucesso.
+                        </div>
+
+                        <div th:if="${param.cadastro}" class="alert alert-success rounded-4">
+                            Cadastro realizado com sucesso. Faça seu login.
+                        </div>
+
+                        <form th:action="@{/login}" method="post">
+                            <div class="mb-3">
+                                <label class="form-label">Login</label>
+                                <input type="text" name="username" class="form-control" placeholder="Digite seu login" required>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">Senha</label>
+                                <input type="password" name="password" class="form-control" placeholder="Digite sua senha" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-umc w-100">Acessar portal</button>
+                        </form>
+
+                        <div class="d-flex justify-content-between align-items-center mt-4 pt-2 flex-wrap gap-2">
+                            <div class="mini-info">
+                                Não tem uma conta?
+                                <a th:href="@{/cadastro}" class="fw-semibold">Cadastre-se</a>
+                            </div>
+                            <div class="mini-info">
+                                <strong>Admin:</strong> admin / admin123
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

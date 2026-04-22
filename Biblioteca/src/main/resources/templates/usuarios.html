@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Usuários - Biblioteca UMC</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f5f7fb; font-family: "Segoe UI", Arial, sans-serif; }
+        .topbar { background: #0f172a; padding: 16px 0; }
+        .topbar .navbar-brand { color: #fff; font-weight: 700; }
+        .top-actions .btn { border-radius: 999px; font-weight: 600; }
+        .page-title { font-weight: 700; color: #0f172a; }
+        .card-shell {
+            border: 0;
+            border-radius: 22px;
+            box-shadow: 0 14px 32px rgba(15,23,42,0.07);
+        }
+        .card-shell .card-header {
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 18px 22px;
+            font-weight: 700;
+        }
+        .form-control, .form-select {
+            border-radius: 14px;
+            padding: 11px 13px;
+        }
+        .table thead th {
+            background: #eef2ff;
+            border-bottom: 0;
+            color: #1e293b;
+            font-size: 0.92rem;
+        }
+        .table td, .table th { vertical-align: middle; }
+        .badge-role {
+            border-radius: 999px;
+            padding: 8px 12px;
+            font-weight: 700;
+            font-size: 0.72rem;
+        }
+        .btn-soft { border-radius: 12px; font-weight: 600; }
+    </style>
+</head>
+<body>
+<nav class="topbar">
+    <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <a class="navbar-brand text-decoration-none" th:href="@{/admin}">Biblioteca UMC</a>
+        <div class="top-actions d-flex flex-wrap gap-2">
+            <a th:href="@{/livros}" class="btn btn-light btn-sm">Acervo</a>
+            <a th:href="@{/emprestimos}" class="btn btn-light btn-sm">Empréstimos</a>
+            <a th:href="@{/reservas}" class="btn btn-light btn-sm">Reservas</a>
+            <form th:action="@{/logout}" method="post" class="m-0">
+                <button type="submit" class="btn btn-warning btn-sm">Sair</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-4">
+    <h2 class="page-title mb-4">Gestão de Usuários</h2>
+
+    <div th:if="${erro != null}" class="alert alert-danger rounded-4" th:text="${erro}"></div>
+    <div th:if="${sucesso != null}" class="alert alert-success rounded-4" th:text="${sucesso}"></div>
+
+    <div class="card card-shell mb-4">
+        <div class="card-header">Cadastro e edição</div>
+        <div class="card-body p-4">
+            <form th:action="@{/usuarios/salvar}" th:object="${usuario}" method="post">
+                <input type="hidden" th:field="*{id}">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label fw-semibold">Nome</label>
+                        <input type="text" th:field="*{nome}" class="form-control" required>
+                    </div>
+
+                    <div class="col-md-2 mb-3">
+                        <label class="form-label fw-semibold">Matrícula</label>
+                        <input type="text" th:field="*{matricula}" class="form-control" required>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label fw-semibold">Tipo</label>
+                        <select th:field="*{tipoUsuario}" class="form-select" required>
+                            <option value="">Selecione</option>
+                            <option value="ALUNO">Aluno</option>
+                            <option value="PROFESSOR">Professor</option>
+                            <option value="FUNCIONARIO">Funcionário</option>
+                        </select>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label fw-semibold">Telefone</label>
+                        <input type="text" th:field="*{telefone}" class="form-control" required>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">Endereço ou CEP</label>
+                        <input type="text" th:field="*{endereco}" class="form-control" required>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label fw-semibold">E-mail</label>
+                        <input type="email" th:field="*{email}" class="form-control" required>
+                    </div>
+
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label fw-semibold">Login</label>
+                        <input type="text" th:field="*{login}" class="form-control" required>
+                    </div>
+
+                    <div class="col-md-3 mb-4">
+                        <label class="form-label fw-semibold">Senha</label>
+                        <input type="password" th:field="*{senha}" class="form-control">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-soft">Salvar</button>
+                <a th:href="@{/usuarios}" class="btn btn-outline-secondary btn-soft">Novo</a>
+            </form>
+        </div>
+    </div>
+
+    <div class="card card-shell">
+        <div class="card-header">Usuários cadastrados</div>
+        <div class="card-body p-4 table-responsive">
+            <table class="table align-middle">
+                <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Matrícula</th>
+                    <th>Perfil</th>
+                    <th>Endereço</th>
+                    <th>E-mail</th>
+                    <th>Telefone</th>
+                    <th>Login</th>
+                    <th width="190">Ações</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${usuarios}">
+                    <td th:text="${item.nome}"></td>
+                    <td th:text="${item.matricula}"></td>
+                    <td>
+                        <span th:if="${item.tipoUsuario == 'ALUNO'}" class="badge text-bg-primary badge-role">ALUNO</span>
+                        <span th:if="${item.tipoUsuario == 'PROFESSOR'}" class="badge text-bg-success badge-role">PROFESSOR</span>
+                        <span th:if="${item.tipoUsuario == 'FUNCIONARIO'}" class="badge text-bg-dark badge-role">FUNCIONÁRIO</span>
+                    </td>
+                    <td th:text="${item.endereco}"></td>
+                    <td th:text="${item.email}"></td>
+                    <td th:text="${item.telefone}"></td>
+                    <td th:text="${item.login}"></td>
+                    <td>
+                        <a th:if="${item.id != null}"
+                           th:href="@{/usuarios/editar/{id}(id=${item.id})}"
+                           class="btn btn-sm btn-warning btn-soft">
+                            Editar
+                        </a>
+
+                        <form th:if="${item.id != null}"
+                              th:action="@{/usuarios/excluir}"
+                              method="post"
+                              style="display:inline;">
+                            <input type="hidden" name="id" th:value="${item.id}">
+                            <button type="submit"
+                                    class="btn btn-sm btn-danger btn-soft"
+                                    onclick="return confirm('Deseja excluir este usuário?')">
+                                Excluir
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(usuarios)}">
+                    <td colspan="8" class="text-center text-secondary py-4">Nenhum usuário cadastrado.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

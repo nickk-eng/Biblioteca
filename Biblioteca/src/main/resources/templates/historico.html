@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Histórico - Biblioteca UMC</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+        .student-topbar {
+            background: linear-gradient(90deg, #0f172a 0%, #1e3a5f 100%);
+            padding: 16px 0;
+        }
+        .student-topbar .brand {
+            color: #fff;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .student-actions .btn {
+            border-radius: 999px;
+            font-weight: 600;
+        }
+        .history-banner {
+            background: #fff;
+            border-radius: 24px;
+            box-shadow: 0 16px 36px rgba(15,23,42,0.08);
+            padding: 28px;
+        }
+        .history-banner small {
+            display: inline-block;
+            background: #fff7d6;
+            color: #8a6a00;
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-weight: 700;
+        }
+        .history-card {
+            border: 0;
+            border-radius: 22px;
+            box-shadow: 0 14px 30px rgba(15,23,42,0.07);
+        }
+        .history-card .card-header {
+            background: #fff;
+            font-weight: 700;
+            padding: 18px 22px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .table thead th {
+            background: #f8fafc;
+            border-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+<nav class="student-topbar">
+    <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <a class="brand" href="#">Biblioteca UMC</a>
+        <div class="student-actions d-flex flex-wrap gap-2">
+            <a th:href="@{/meus-emprestimos}" class="btn btn-light btn-sm">Livros Emprestados</a>
+            <a th:href="@{/minhas-reservas}" class="btn btn-light btn-sm">Minhas Reservas</a>
+            <a th:href="@{/historico}" class="btn btn-light btn-sm">Histórico</a>
+            <form th:action="@{/logout}" method="post" class="m-0">
+                <button type="submit" class="btn btn-warning btn-sm">Sair</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<div class="container py-4">
+    <div class="history-banner mb-4">
+        <small>Consulta consolidada</small>
+        <h2 class="fw-bold mt-3 mb-2">Histórico de uso da biblioteca</h2>
+        <p class="text-secondary mb-0" th:text="${'Consulta histórica de empréstimos e reservas de ' + usuarioLogado.nome}"></p>
+    </div>
+
+    <div class="card history-card mb-4">
+        <div class="card-header">Empréstimos finalizados</div>
+        <div class="card-body p-4 table-responsive">
+            <table class="table align-middle">
+                <thead>
+                <tr>
+                    <th>Livro</th>
+                    <th>Empréstimo</th>
+                    <th>Prevista</th>
+                    <th>Devolução</th>
+                    <th>Multa</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${historicoEmprestimos}">
+                    <td th:text="${item.tituloLivro}"></td>
+                    <td th:text="${item.dataEmprestimo}"></td>
+                    <td th:text="${item.dataPrevistaDevolucao}"></td>
+                    <td th:text="${item.dataDevolucao}"></td>
+                    <td th:text="${'R$ ' + #numbers.formatDecimal(item.multa, 1, 2)}"></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(historicoEmprestimos)}">
+                    <td colspan="5" class="text-center text-secondary py-4">Nenhum empréstimo finalizado.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card history-card">
+        <div class="card-header">Reservas encerradas</div>
+        <div class="card-body p-4 table-responsive">
+            <table class="table align-middle">
+                <thead>
+                <tr>
+                    <th>Livro</th>
+                    <th>Solicitação</th>
+                    <th>Expiração</th>
+                    <th>Atendimento</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="item : ${historicoReservas}">
+                    <td th:text="${item.tituloLivro}"></td>
+                    <td th:text="${item.dataSolicitacao}"></td>
+                    <td th:text="${item.dataExpiracao}"></td>
+                    <td th:text="${item.dataAtendimento != null ? item.dataAtendimento : '-'}"></td>
+                    <td>
+                        <span th:if="${item.status == 'ATENDIDA'}" class="badge text-bg-primary">ATENDIDA</span>
+                        <span th:if="${item.status == 'CANCELADA'}" class="badge text-bg-warning">CANCELADA</span>
+                        <span th:if="${item.status == 'EXPIRADA'}" class="badge text-bg-danger">EXPIRADA</span>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(historicoReservas)}">
+                    <td colspan="5" class="text-center text-secondary py-4">Nenhuma reserva finalizada.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
